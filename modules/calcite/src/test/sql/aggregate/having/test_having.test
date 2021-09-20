@@ -8,6 +8,45 @@ CREATE TABLE test (a INTEGER, b INTEGER);
 statement ok
 INSERT INTO test VALUES (11, 22), (13, 22), (12, 21)
 
+# HAVING with column references does not work
+# HAVING clause can only contain aggregates
+statement error
+SELECT a FROM test WHERE a=13 HAVING a > 11
+
+# HAVING clause also turns the rest of the query into an aggregate
+# thus column references in SELECT clause also produce errors
+statement error
+SELECT a FROM test WHERE a=13 HAVING SUM(a) > 11
+
+# once we produce a sum this works though
+query R
+SELECT SUM(a) FROM test WHERE a=13 HAVING SUM(a) > 11
+----
+13.000000
+
+query R
+SELECT SUM(a) FROM test WHERE a=13 HAVING SUM(a) > 20
+----
+
+# HAVING with single-node aggregation does work, even without GROUP BY
+query R
+SELECT SUM(a) FROM test HAVING SUM(a)>10;
+----
+36.000000
+
+query R
+SELECT SUM(a) FROM test HAVING SUM(a)<10;
+----
+
+query R
+SELECT SUM(a) FROM test HAVING COUNT(*)>1;
+----
+36.000000
+
+query R
+SELECT SUM(a) FROM test HAVING COUNT(*)>10;
+----
+
 # HAVING with condition on group
 query IR
 SELECT b, SUM(a) AS sum FROM test GROUP BY b HAVING b=21 ORDER BY b;
