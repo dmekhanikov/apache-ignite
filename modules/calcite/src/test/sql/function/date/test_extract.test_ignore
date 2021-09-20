@@ -98,15 +98,3 @@ SELECT EXTRACT(hour FROM i) FROM dates ORDER BY i
 ----
 0
 NULL
-
-query I
-SELECT EXTRACT(milliseconds FROM i) FROM dates ORDER BY i
-----
-0
-NULL
-
-query I
-SELECT EXTRACT(microsecond FROM i) FROM dates ORDER BY i
-----
-0
-NULL
