@@ -16,16 +16,3 @@ NULL
 NULL
 NULL
 NULL
-
-statement ok
-CREATE TABLE emptyaggr(i INTEGER);
-
-query I
-SELECT COUNT(*) FROM emptyaggr
-----
-0
-
-query RIIIRIIIII
-SELECT SUM(i), COUNT(i), COUNT(DISTINCT i), COUNT(*), AVG(i), COUNT(*)+1, COUNT(i)+1, MIN(i), MIN(i+1), MIN(i)+1 FROM emptyaggr
-----
-NULL	0	0	0	NULL	1	1	NULL	NULL	NULL

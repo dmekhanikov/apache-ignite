@@ -14,4 +14,16 @@ CREATE TABLE test (a INTEGER, s VARCHAR);
 statement ok
 INSERT INTO test VALUES (11, 'hello'), (12, 'world'), (11, NULL)
 
-# group by the strings
+# grouped distinct
+query IIII
+SELECT a, COUNT(*), COUNT(s), COUNT(DISTINCT s) FROM test GROUP BY a ORDER BY a;
+----
+11	3	2	1
+12	2	2	1
+
+# now with WHERE clause
+query IIII
+SELECT a, COUNT(*), COUNT(s), COUNT(DISTINCT s) FROM test WHERE s IS NOT NULL GROUP BY a ORDER BY a;
+----
+11	2	2	1
+12	2	2	1
